@@ -4,6 +4,13 @@ services:
     build: ./backend
     tty: true
     ports:
+      - "10202:10202"
+    environment:
+      - LISTEN=:10202
+  backend1:
+    build: ./backend1
+    tty: true
+    ports:
       - "10201:10201"
     environment:
       - LISTEN=:10201
