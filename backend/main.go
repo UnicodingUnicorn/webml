@@ -54,6 +54,7 @@ func main() {
 	p := ParserHandler { minioClient, expiry }
 	md := ModelDataHandler { minioClient, expiry }
 	b := BatchHandler { minioClient, expiry }
+	s := ValuesHandler{ make(map[string] Session) }
 	// Return minio presigned URLs
 	// Model routes
 	router.GET("/models", m.GetModels)
@@ -75,6 +76,11 @@ func main() {
 	router.GET("/model/:model/batch/:id/data", b.GetBatchData)
 	router.GET("/model/:model/batch/:id/labels", b.GetBatchLabels)
 	router.POST("/model/:model/data/:id/batch", b.BatchData)
+	// Weights/Session routes
+	router.GET("/session/:id/loss", s.GetLoss)
+	router.POST("/session/:id/loss", s.PostLoss)
+	router.POST("/session/:id/weights", s.PostWeights)
+	router.POST("/session/:id", s.NewSession)
 
 	// Start server
 	log.Printf("starting server on %s", listen)
