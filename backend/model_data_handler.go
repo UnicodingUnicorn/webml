@@ -15,20 +15,16 @@ type ModelDataHandler struct {
   expiry time.Duration
 };
 
-type ModelDataBucketsInfo struct {
-	ModelData []string `json:"data"`
-}
 func (h *ModelDataHandler) GetModelData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
   model := p.ByName("model")
 
-  modelData := ModelDataBucketsInfo {}
-  modelData.ModelData = make([]string, 0)
+  modelData :=  make([]string, 0)
   doneCh := make(chan struct{})
   defer close(doneCh)
   objectsCh := minioClient.ListObjectsV2(model, "data:", true, doneCh)
   for object := range objectsCh {
     if object.Err == nil {
-      modelData.ModelData = append(modelData.ModelData, object.Key)
+      modelData = append(modelData, object.Key)
     }
   }
 
@@ -69,20 +65,16 @@ func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Reques
   http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
 }
 
-type ModelLabelsBucketsInfo struct {
-	ModelLabels []string `json:"labels"`
-}
 func (h *ModelDataHandler) GetModelLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
   model := p.ByName("model")
 
-  modelLabels := ModelLabelsBucketsInfo {}
-  modelLabels.ModelLabels = make([]string, 0)
+  modelLabels :=  make([]string, 0)
   doneCh := make(chan struct{})
   defer close(doneCh)
   objectsCh := minioClient.ListObjectsV2(model, "labels:", true, doneCh)
   for object := range objectsCh {
     if object.Err == nil {
-      modelLabels.ModelLabels = append(modelLabels.ModelLabels, object.Key)
+      modelLabels = append(modelLabels, object.Key)
     }
   }
 

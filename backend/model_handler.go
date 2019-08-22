@@ -15,9 +15,6 @@ type ModelHandler struct {
   expiry time.Duration
 };
 
-type ModelsBucketsInfo struct {
-	Models []string `json:"models"`
-}
 func (h *ModelHandler) GetModels(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
   buckets, err := minioClient.ListBuckets()
   if err != nil {
@@ -25,11 +22,10 @@ func (h *ModelHandler) GetModels(w http.ResponseWriter, r *http.Request, _ httpr
     return
   }
 
-  bucketNames := ModelsBucketsInfo{}
-  bucketNames.Models = make([]string, 0)
+  bucketNames := make([]string, 0)
   for _, bucket := range buckets {
     if bucket.Name != "parser" {
-      bucketNames.Models = append(bucketNames.Models, bucket.Name)
+      bucketNames = append(bucketNames, bucket.Name)
     }
   }
 

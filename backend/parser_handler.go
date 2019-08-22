@@ -15,18 +15,15 @@ type ParserHandler struct {
   expiry time.Duration
 };
 
-type ParsersBucketsInfo struct {
-	Parsers []string `json:"parsers"`
-}
 func (h *ParserHandler) GetParsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-  parsers := ParsersBucketsInfo {}
-  parsers.Parsers = make([]string, 0)
+  parsers := make([]string, 0)
+
   doneCh := make(chan struct{})
   defer close(doneCh)
   objectsCh := minioClient.ListObjectsV2("parser", "", true, doneCh)
   for object := range objectsCh {
     if object.Err == nil {
-      parsers.Parsers = append(parsers.Parsers, object.Key)
+      parsers = append(parsers, object.Key)
     }
   }
 
