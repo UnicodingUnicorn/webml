@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"crypto/rand"
+  "encoding/json"
 	"io"
 	"log"
 	"math/big"
@@ -22,6 +23,22 @@ type BatchHandler struct {
 }
 
 func (h *BatchHandler) GetBatch(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	model := p.ByName("model")
+
+	ids := make([]string, 0)
+	doneCh := make(chan struct{})
+	defer close(doneCh)
+	objectsCh := h.minioClient.ListObjectsV2(model, "batch:data:", true, doneCh)
+	for object := range objectsCh {
+		if object.Err == nil {
+			ids = append(ids, object.Key)
+		}
+	}
+
+	json.NewEncoder(w).Encode(ids)
+}
+
+func (h *BatchHandler) GetBatchRand(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 
 	ids := make([]string, 0)

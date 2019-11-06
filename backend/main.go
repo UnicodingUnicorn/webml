@@ -73,6 +73,7 @@ func main() {
 	router.PUT("/model/:model/labels", md.UploadModelLabels)
 	// Batch routes
 	router.GET("/model/:model/batch", b.GetBatch)
+	router.GET("/model/:model/batch/random", b.GetBatchRand)
 	router.GET("/model/:model/batch/:id/data", b.GetBatchData)
 	router.GET("/model/:model/batch/:id/labels", b.GetBatchLabels)
 	router.POST("/model/:model/data/:id/batch", b.BatchData)

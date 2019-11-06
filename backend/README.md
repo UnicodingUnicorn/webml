@@ -10,12 +10,13 @@ backend for WebML. Mostly acts as a proxy for [minio](min.io).
 | Get Model by ID | Get Parser by ID | Get Model Data By ID | Get Model Labels By ID |
 | Upload Model    | Upload Parser    | Upload Model Data    | Upload Model Labels    |
 
-| Batch            |  Session        |
-| ---------------- | --------------- |
-| Get Batch        | Get Loss        |
-| Get Batch Data   | Post Loss       |
-| Get Batch Labels | Update Weights  |
-| Batch Data       | New Session     |
+| Batch              |  Session        |
+| ------------------ | --------------- |
+| Get Batches        | Get Loss        |
+| Get Random Batch   | Post Loss       |
+| Get Batch Data     | Update Weights  |
+| Get Batch Labels   | New Session     |
+| Batch Data         |                 |
 
 Most of the routes, save for the ones under `Session`, are basically just proxy routes that redirect one to a minio pre-signed URL.
 
@@ -335,10 +336,30 @@ Redirect to minio pre-signed URL to upload the labels.
 
 These routes handle the separation of model data/labelsets into small "batches" for training by individual nodes.
 
-#### Get Batch
+#### Get Batches
 
 ```
 GET /model/:model/batch
+```
+
+Get a list of IDs of batches of a model.
+
+##### URL Params
+
+| Name  | Type   | Description               |
+| ----- | ------ | ------------------------- |
+| model | String | ID of the model to query. |
+
+##### Success (200 OK)
+
+```json
+[ "<batch 1 id>", "<batch 2 id>", "..." ]
+```
+
+#### Get Random Batch
+
+```
+GET /model/:model/batch/random
 ```
 
 Get the ID of a random batch from a model.
