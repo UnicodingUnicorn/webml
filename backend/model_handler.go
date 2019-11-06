@@ -64,6 +64,23 @@ func (h *ModelHandler) UploadModel(w http.ResponseWriter, r *http.Request, _ htt
 		return
 	}
 
+	// Create bucket for parsers if it doesn't exist
+	exists, err := minioClient.BucketExists(bucketName)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+	if exists {
+		http.Error(w, http.StatusText(http.StatusConflict), http.StatusConflict)
+		return
+	}
+
+	err = minioClient.MakeBucket(bucketName, "us-east-1")
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
 	presignedURL, err := minioClient.PresignedPutObject(bucketName, "model", h.expiry)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

@@ -91,10 +91,11 @@ Redirect to minio pre-signed URL to upload the data.
 
 ##### Errors
 
-| Code | Description                 |
-| ---- | --------------------------- |
-| 400  | Error parsing request body. |
-| 500  | Error querying minio.       |
+| Code | Description                             |
+| ---- | --------------------------------------- |
+| 400  | Error parsing request body.             |
+| 409  | Model with specified ID already exists. |
+| 500  | Error querying minio.                   |
 
 ---
 
