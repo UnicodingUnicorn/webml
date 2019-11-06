@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-  "net/http"
+	"net/http"
 	"os"
 	"time"
 
@@ -15,7 +15,7 @@ var listen string
 var minioClient *minio.Client
 
 func main() {
-  // Load .env
+	// Load .env
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("error loading .env file")
@@ -25,7 +25,7 @@ func main() {
 	minioID := os.Getenv("MINIO_ACCESS_KEY")
 	minioKey := os.Getenv("MINIO_SECRET_KEY")
 
-  // Minio client
+	// Minio client
 	minioClient, err = minio.New(minioEndpoint, minioID, minioKey, false)
 	if err != nil {
 		log.Fatal("error loading minio")
@@ -50,11 +50,11 @@ func main() {
 	// Routes
 	router := httprouter.New()
 	// Route classes
-	m := ModelHandler { minioClient, expiry }
-	p := ParserHandler { minioClient, expiry }
-	md := ModelDataHandler { minioClient, expiry }
-	b := BatchHandler { minioClient, expiry }
-	s := ValuesHandler{ make(map[string] Session) }
+	m := ModelHandler{minioClient, expiry}
+	p := ParserHandler{minioClient, expiry}
+	md := ModelDataHandler{minioClient, expiry}
+	b := BatchHandler{minioClient, expiry}
+	s := ValuesHandler{make(map[string]Session)}
 	// Return minio presigned URLs
 	// Model routes
 	router.GET("/models", m.GetModels)

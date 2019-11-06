@@ -1,41 +1,41 @@
 package main
 
 import (
-  "bytes"
-  "crypto/rand"
-  "io"
-  "log"
-  "math/big"
-  "net/http"
-  "net/url"
-  "time"
-  "strconv"
+	"bytes"
+	"crypto/rand"
+	"io"
+	"log"
+	"math/big"
+	"net/http"
+	"net/url"
+	"strconv"
+	"time"
 
-  "github.com/julienschmidt/httprouter"
-  "github.com/minio/minio-go"
-  "github.com/yuin/gopher-lua"
+	"github.com/julienschmidt/httprouter"
+	"github.com/minio/minio-go"
+	"github.com/yuin/gopher-lua"
 )
 
 type BatchHandler struct {
-  minioClient *minio.Client
-  expiry time.Duration
-};
+	minioClient *minio.Client
+	expiry      time.Duration
+}
 
 func (h *BatchHandler) GetBatch(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-  model := p.ByName("model")
+	model := p.ByName("model")
 
-  ids := make([]string, 0)
-  doneCh := make(chan struct{})
-  defer close(doneCh)
-  objectsCh := h.minioClient.ListObjectsV2(model, "batch:data:", true, doneCh)
-  for object := range objectsCh {
-    if object.Err == nil {
-      ids = append(ids, object.Key)
-    }
-  }
+	ids := make([]string, 0)
+	doneCh := make(chan struct{})
+	defer close(doneCh)
+	objectsCh := h.minioClient.ListObjectsV2(model, "batch:data:", true, doneCh)
+	for object := range objectsCh {
+		if object.Err == nil {
+			ids = append(ids, object.Key)
+		}
+	}
 
-  n, _ := rand.Int(rand.Reader, big.NewInt(int64(len(ids))))
-  w.Write([]byte(ids[n.Int64()]))
+	n, _ := rand.Int(rand.Reader, big.NewInt(int64(len(ids))))
+	w.Write([]byte(ids[n.Int64()]))
 }
 
 func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -43,7 +43,7 @@ func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p ht
 	id := p.ByName("id")
 
 	reqParams := make(url.Values)
-	presignedURL, err := h.minioClient.PresignedGetObject(model, "batch:data:" + id, h.expiry, reqParams)
+	presignedURL, err := h.minioClient.PresignedGetObject(model, "batch:data:"+id, h.expiry, reqParams)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -57,7 +57,7 @@ func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p 
 	id := p.ByName("id")
 
 	reqParams := make(url.Values)
-	presignedURL, err := h.minioClient.PresignedGetObject(model, "batch:labels:" + id, h.expiry, reqParams)
+	presignedURL, err := h.minioClient.PresignedGetObject(model, "batch:labels:"+id, h.expiry, reqParams)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -68,32 +68,32 @@ func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p 
 
 // Parse and split a dataset into batches
 func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-  model := p.ByName("model")
-  dataId := p.ByName("id")
+	model := p.ByName("model")
+	dataId := p.ByName("id")
 
-  dataParserId := r.FormValue("data_parser")
-  if dataParserId == "" {
-    http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-    return
-  }
-  labelParserId := r.FormValue("label_parser")
-  if labelParserId == "" {
-    http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-    return
-  }
+	dataParserId := r.FormValue("data_parser")
+	if dataParserId == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+	labelParserId := r.FormValue("label_parser")
+	if labelParserId == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
-  batchSizeText := r.FormValue("batch_size")
-  if batchSizeText == "" {
-    http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-    return
-  }
-  batchSize, err := strconv.Atoi(batchSizeText)
-  if err != nil {
-    http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-    return
-  }
+	batchSizeText := r.FormValue("batch_size")
+	if batchSizeText == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+	batchSize, err := strconv.Atoi(batchSizeText)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
-  dataParserObject, err := h.minioClient.GetObject("parser", dataParserId, minio.GetObjectOptions{})
+	dataParserObject, err := h.minioClient.GetObject("parser", dataParserId, minio.GetObjectOptions{})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -111,7 +111,7 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 	labelParserBytes.ReadFrom(labelParserObject)
 	labelParser := labelParserBytes.String()
 
-  dataL := lua.NewState()
+	dataL := lua.NewState()
 	defer dataL.Close()
 	err = dataL.DoString(dataParser)
 	if err != nil {
@@ -119,13 +119,13 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 		return
 	}
 
-	dataObject, err := h.minioClient.GetObject(model, "data:" + dataId, minio.GetObjectOptions{})
+	dataObject, err := h.minioClient.GetObject(model, "data:"+dataId, minio.GetObjectOptions{})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-  batchIds := make([]string, 0)
+	batchIds := make([]string, 0)
 
 	buf := make([]byte, 512)
 	batch := make([][]byte, 0)
@@ -161,7 +161,7 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 					for _, datum := range batch {
 						data = append(data, datum...)
 					}
-					_, err := h.minioClient.PutObject(model, "batch:data:" + batchId, bytes.NewReader(data), -1, minio.PutObjectOptions{})
+					_, err := h.minioClient.PutObject(model, "batch:data:"+batchId, bytes.NewReader(data), -1, minio.PutObjectOptions{})
 					if err != nil {
 						log.Printf("%s", err)
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -181,7 +181,7 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 		return
 	}
 
-	labelObject, err := h.minioClient.GetObject(model, "labels:" + dataId, minio.GetObjectOptions{})
+	labelObject, err := h.minioClient.GetObject(model, "labels:"+dataId, minio.GetObjectOptions{})
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -221,7 +221,7 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 					for _, datum := range batch {
 						data = append(data, datum...)
 					}
-					_, err := h.minioClient.PutObject(model, "batch:labels:" + batchId, bytes.NewReader(data), -1, minio.PutObjectOptions{})
+					_, err := h.minioClient.PutObject(model, "batch:labels:"+batchId, bytes.NewReader(data), -1, minio.PutObjectOptions{})
 					if err != nil {
 						log.Printf("%s", err)
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

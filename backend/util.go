@@ -1,8 +1,8 @@
 package main
 
 import (
-  "crypto/rand"
-  "encoding/hex"
+	"crypto/rand"
+	"encoding/hex"
 )
 
 func RandomHex() string {
