@@ -27,8 +27,8 @@ type ValuesHandler struct {
 
 func (h *ValuesHandler) GetLoss(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
   id := p.ByName("id")
-  if loss, ok := h.Sessions[id]; ok {
-    lossString := fmt.Sprintf("%f", loss)
+  if session, ok := h.Sessions[id]; ok {
+    lossString := fmt.Sprintf("%f", session.Loss)
     w.Write([]byte(lossString))
   } else {
     http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -115,8 +115,8 @@ func (h *ValuesHandler) PostWeights(w http.ResponseWriter, r *http.Request, p ht
 
 type NewSessionReq struct {
   Shape  []int `json:"shape"`
-  Loss  float64 `json:"loss, omitempty"`
-  Alpha float64 `json:"alpha, omitempty"`
+  Loss  float64 `json:"loss,omitempty"`
+  Alpha float64 `json:"alpha,omitempty"`
 }
 func (h *ValuesHandler) NewSession(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
   id := p.ByName("id")
