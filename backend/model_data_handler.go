@@ -49,8 +49,7 @@ func (h *ModelDataHandler) GetModelDataById(w http.ResponseWriter, r *http.Reque
 
 func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
-
-	id := r.FormValue("id")
+	id := p.ByName("id")
 	if id == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
@@ -99,8 +98,7 @@ func (h *ModelDataHandler) GetModelLabelsById(w http.ResponseWriter, r *http.Req
 
 func (h *ModelDataHandler) UploadModelLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
-
-	id := r.FormValue("id")
+	id := p.ByName("id")
 	if id == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return

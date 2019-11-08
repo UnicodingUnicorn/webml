@@ -74,16 +74,20 @@ Redirect to minio pre-signed URL to download the data.
 #### Upload Model
 
 ```
-PUT /model
+PUT /model/:id
 ```
 
 Upload a model.
 
-##### Body (multipart/form-data)
+##### URL Params
 
 | Name | Type   | Description          | Required |
 | ---- | ------ | -------------------- | -------- |
 | id   | String | ID of the new model. | ✓        |
+
+##### Body (multipart/form-data)
+
+Model data.
 
 ##### Success
 
@@ -231,12 +235,11 @@ Upload data to a model.
 | Name  | Type   | Description                   |
 | ----- | ------ | ----------------------------- |
 | model | String | ID of the model to upload to. |
+| id    | String | ID of the new dataset.        |
 
 ##### Body (multipart/form-data)
 
-| Name | Type   | Description            | Required |
-| ---- | ------ | ---------------------- | -------- |
-| id   | String | ID of the new dataset. | ✓        |
+Data.
 
 ##### Success
 
@@ -313,12 +316,11 @@ Upload labels to a model.
 | Name  | Type   | Description                   |
 | ----- | ------ | ----------------------------- |
 | model | String | ID of the model to upload to. |
+| id    | String | ID of the new labelset.       |
 
 ##### Body (multipart/form-data)
 
-| Name | Type   | Description             | Required |
-| ---- | ------ | ----------------------- | -------- |
-| id   | String | ID of the new labelset. | ✓        |
+Labels.
 
 ##### Success
 

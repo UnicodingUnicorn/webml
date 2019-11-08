@@ -57,8 +57,8 @@ func (h *ModelHandler) GetModelById(w http.ResponseWriter, r *http.Request, p ht
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
 }
 
-func (h *ModelHandler) UploadModel(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	bucketName := r.FormValue("id")
+func (h *ModelHandler) UploadModel(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	bucketName := p.Byname("id")
 	if bucketName == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return

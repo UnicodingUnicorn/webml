@@ -59,7 +59,7 @@ func main() {
 	// Model routes
 	router.GET("/models", m.GetModels)
 	router.GET("/model/:id", m.GetModelById)
-	router.PUT("/model", m.UploadModel)
+	router.PUT("/model/:id", m.UploadModel)
 	// Parser routes
 	router.GET("/parsers", p.GetParsers)
 	router.GET("/parser/:id", p.GetParserById)
@@ -67,10 +67,10 @@ func main() {
 	// Model Data routes
 	router.GET("/model/:model/data", md.GetModelData)
 	router.GET("/model/:model/data/:id", md.GetModelDataById)
-	router.PUT("/model/:model/data", md.UploadModelData)
+	router.PUT("/model/:model/data/:id", md.UploadModelData)
 	router.GET("/model/:model/labels", md.GetModelLabels)
 	router.GET("/model/:model/labels/:id", md.GetModelLabelsById)
-	router.PUT("/model/:model/labels", md.UploadModelLabels)
+	router.PUT("/model/:model/labels/:id", md.UploadModelLabels)
 	// Batch routes
 	router.GET("/model/:model/batch", b.GetBatch)
 	router.GET("/model/:model/batch/random", b.GetBatchRand)
