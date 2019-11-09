@@ -58,7 +58,7 @@ func (h *ModelHandler) GetModelById(w http.ResponseWriter, r *http.Request, p ht
 }
 
 func (h *ModelHandler) UploadModel(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	bucketName := p.Byname("id")
+	bucketName := p.ByName("id")
 	if bucketName == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
