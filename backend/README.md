@@ -212,7 +212,7 @@ Get a specific model data's definition by ID.
 
 ##### Success
 
-Redirect to minio pre-signed URL to download the model data.
+Redirect to minio pre-signed URL to download the model data. Please note the data is unparsed, only batched data is parsed.
 
 ##### Errors
 
@@ -276,7 +276,7 @@ Get a list of all the label IDs available for a model.
 
 ---
 
-#### Get Model Data By ID
+#### Get Model Labels By ID
 
 ```
 GET /model/:model/labels/:id
@@ -293,7 +293,7 @@ Get a specific model label's definition by ID.
 
 ##### Success
 
-Redirect to minio pre-signed URL to download the model labels.
+Redirect to minio pre-signed URL to download the model labels. Please note the data is unparsed, only batched data is parsed.
 
 ##### Errors
 
@@ -303,7 +303,7 @@ Redirect to minio pre-signed URL to download the model labels.
 
 ---
 
-#### Upload Model Data
+#### Upload Model Labels
 
 ```
 PUT /model/:model/labels
