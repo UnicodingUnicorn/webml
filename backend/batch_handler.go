@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"crypto/rand"
-  "encoding/json"
+	"encoding/json"
 	"io"
 	"log"
 	"math/big"
@@ -141,6 +141,19 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+	dataObjectInfo, err := dataObject.Stat()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	dataShapes := dataObjectInfo.Metadata["x-amz-meta-shape"]
+	var dataShape string
+	if len(dataShapes) == 0 {
+		dataShape = ""
+	} else {
+		dataShape = dataShapes[0]
+	}
 
 	batchIds := make([]string, 0)
 
@@ -178,7 +191,11 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 					for _, datum := range batch {
 						data = append(data, datum...)
 					}
-					_, err := h.minioClient.PutObject(model, "batch:data:"+batchId, bytes.NewReader(data), -1, minio.PutObjectOptions{})
+
+					options := minio.PutObjectOptions{
+						UserMetadata: map[string]string{"shape": dataShape},
+					}
+					_, err := h.minioClient.PutObject(model, "batch:data:"+batchId, bytes.NewReader(data), -1, options)
 					if err != nil {
 						log.Printf("%s", err)
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -202,6 +219,19 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
+	}
+	labelObjectInfo, err := labelObject.Stat()
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	labelShapes := labelObjectInfo.Metadata["x-amz-meta-shape"]
+	var labelShape string
+	if len(labelShapes) == 0 {
+		labelShape = ""
+	} else {
+		labelShape = labelShapes[0]
 	}
 
 	buf = make([]byte, 512)
@@ -238,7 +268,11 @@ func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httpr
 					for _, datum := range batch {
 						data = append(data, datum...)
 					}
-					_, err := h.minioClient.PutObject(model, "batch:labels:"+batchId, bytes.NewReader(data), -1, minio.PutObjectOptions{})
+
+					options := minio.PutObjectOptions{
+						UserMetadata: map[string]string{"shape": labelShape},
+					}
+					_, err := h.minioClient.PutObject(model, "batch:labels:"+batchId, bytes.NewReader(data), -1, options)
 					if err != nil {
 						log.Printf("%s", err)
 						http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
