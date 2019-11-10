@@ -67,6 +67,38 @@ func (h *ModelDataHandler) GetModelDataById(w http.ResponseWriter, r *http.Reque
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
 }
 
+func (h *ModelDataHandler) HeadModelDataById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	model := p.ByName("model")
+	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// Get object HEAD
+	modelDataInfo, err := minioClient.StatObject(model, "data:"+id, minio.StatObjectOptions{})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	// Send headers
+	w.Header().Set("Content-Type", modelDataInfo.ContentType)
+	for key, value := range modelDataInfo.Metadata {
+		for _, v := range value {
+			w.Header().Set(key, v)
+		}
+	}
+
+	w.WriteHeader(200)
+}
+
 func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 	id := p.ByName("id")
@@ -134,6 +166,38 @@ func (h *ModelDataHandler) GetModelLabelsById(w http.ResponseWriter, r *http.Req
 	}
 
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
+}
+
+func (h *ModelDataHandler) HeadModelLabelsById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	model := p.ByName("model")
+	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// Get object HEAD
+	modelLabelsInfo, err := minioClient.StatObject(model, "labels:"+id, minio.StatObjectOptions{})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	// Send headers
+	w.Header().Set("Content-Type", modelLabelsInfo.ContentType)
+	for key, value := range modelLabelsInfo.Metadata {
+		for _, v := range value {
+			w.Header().Set(key, v)
+		}
+	}
+
+	w.WriteHeader(200)
 }
 
 func (h *ModelDataHandler) UploadModelLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

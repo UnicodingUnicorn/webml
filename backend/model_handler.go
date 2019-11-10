@@ -57,6 +57,37 @@ func (h *ModelHandler) GetModelById(w http.ResponseWriter, r *http.Request, p ht
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
 }
 
+func (h *ModelHandler) HeadModelById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(id)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// Get object HEAD
+	modelInfo, err := minioClient.StatObject(id, "model", minio.StatObjectOptions{})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	// Send headers
+	w.Header().Set("Content-Type", modelInfo.ContentType)
+	for key, value := range modelInfo.Metadata {
+		for _, v := range value {
+			w.Header().Set(key, v)
+		}
+	}
+
+	w.WriteHeader(200)
+}
+
 func (h *ModelHandler) UploadModel(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	bucketName := p.ByName("id")
 	if bucketName == "" {

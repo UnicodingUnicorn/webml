@@ -59,23 +59,29 @@ func main() {
 	// Model routes
 	router.GET("/models", m.GetModels)
 	router.GET("/model/:id", m.GetModelById)
+	router.HEAD("/model/:id", m.HeadModelById)
 	router.PUT("/model/:id", m.UploadModel)
 	// Parser routes
 	router.GET("/parsers", p.GetParsers)
 	router.GET("/parser/:id", p.GetParserById)
+	router.HEAD("/parser/:id", p.HeadParserById)
 	router.PUT("/parser", p.UploadParser)
 	// Model Data routes
 	router.GET("/model/:model/data", md.GetModelData)
 	router.GET("/model/:model/data/:id", md.GetModelDataById)
+	router.HEAD("/model/:model/data:id", md.HeadModelDataById)
 	router.PUT("/model/:model/data/:id", md.UploadModelData)
 	router.GET("/model/:model/labels", md.GetModelLabels)
 	router.GET("/model/:model/labels/:id", md.GetModelLabelsById)
+	router.HEAD("/model/:model/labels/:id", md.HeadModelLabelsById)
 	router.PUT("/model/:model/labels/:id", md.UploadModelLabels)
 	// Batch routes
 	router.GET("/model/:model/batch", b.GetBatch)
 	router.GET("/model/:model/batch/random", b.GetBatchRand)
 	router.GET("/model/:model/batch/:id/data", b.GetBatchData)
+	router.HEAD("/model/:model/batch/:id/data", b.HeadBatchData)
 	router.GET("/model/:model/batch/:id/labels", b.GetBatchLabels)
+	router.HEAD("/model/:model/batch/:id/labels", b.HeadBatchLabels)
 	router.POST("/model/:model/data/:id/batch", b.BatchData)
 	// Weights/Session routes
 	router.GET("/session/:id/loss", s.GetLoss)

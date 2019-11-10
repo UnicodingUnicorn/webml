@@ -45,6 +45,27 @@ func (h *ParserHandler) GetParserById(w http.ResponseWriter, r *http.Request, p 
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
 }
 
+func (h *ParserHandler) HeadParserById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id := p.ByName("id")
+
+	// Get object HEAD
+	parserInfo, err := minioClient.StatObject("parser", id, minio.StatObjectOptions{})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	// Send headers
+	w.Header().Set("Content-Type", parserInfo.ContentType)
+	for key, value := range parserInfo.Metadata {
+		for _, v := range value {
+			w.Header().Set(key, v)
+		}
+	}
+
+	w.WriteHeader(200)
+}
+
 func (h *ParserHandler) UploadParser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	id := RandomHex()
 

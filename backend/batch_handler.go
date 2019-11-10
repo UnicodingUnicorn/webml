@@ -99,6 +99,38 @@ func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p ht
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
 }
 
+func (h *BatchHandler) HeadBatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	model := p.ByName("model")
+	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// Get object HEAD
+	batchDataInfo, err := minioClient.StatObject(model, "batch:data:"+id, minio.StatObjectOptions{})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	// Send headers
+	w.Header().Set("Content-Type", batchDataInfo.ContentType)
+	for key, value := range batchDataInfo.Metadata {
+		for _, v := range value {
+			w.Header().Set(key, v)
+		}
+	}
+
+	w.WriteHeader(200)
+}
+
 func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 	id := p.ByName("id")
@@ -121,6 +153,38 @@ func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p 
 	}
 
 	http.Redirect(w, r, presignedURL.String(), http.StatusTemporaryRedirect)
+}
+
+func (h *BatchHandler) HeadBatchLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	model := p.ByName("model")
+	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
+	// Get object HEAD
+	batchLabelsInfo, err := minioClient.StatObject(model, "batch:labels:"+id, minio.StatObjectOptions{})
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	// Send headers
+	w.Header().Set("Content-Type", batchLabelsInfo.ContentType)
+	for key, value := range batchLabelsInfo.Metadata {
+		for _, v := range value {
+			w.Header().Set(key, v)
+		}
+	}
+
+	w.WriteHeader(200)
 }
 
 // Parse and split a dataset into batches

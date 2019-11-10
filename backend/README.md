@@ -4,19 +4,22 @@ backend for WebML. Mostly acts as a proxy for [minio](min.io).
 
 ## API
 
-| Model           | Parser           | Model Data (Data)    | Model Data (Labels)    |
-| --------------- | ---------------- | -------------------- | ---------------------- |
-| Get Models      | Get Parsers      | Get Model Data       | Get Model Labels       |
-| Get Model by ID | Get Parser by ID | Get Model Data By ID | Get Model Labels By ID |
-| Upload Model    | Upload Parser    | Upload Model Data    | Upload Model Labels    |
+| Model            | Parser            | Model Data (Data)     | Model Data (Labels)     |
+| ---------------- | ----------------- | --------------------- | ----------------------- |
+| Get Models       | Get Parsers       | Get Model Data        | Get Model Labels        |
+| Get Model by ID  | Get Parser by ID  | Get Model Data by ID  | Get Model Labels by ID  |
+| Head Model by ID | Head Parser by ID | Head Model Data by ID | Head Model Labels by ID |
+| Upload Model     | Upload Parser     | Upload Model Data     | Upload Model Labels     |
 
-| Batch              |  Session        |
-| ------------------ | --------------- |
-| Get Batches        | Get Loss        |
-| Get Random Batch   | Post Loss       |
-| Get Batch Data     | Update Weights  |
-| Get Batch Labels   | New Session     |
-| Batch Data         |                 |
+| Batch             |  Session        |
+| ----------------- | --------------- |
+| Get Batches       | Get Loss        |
+| Get Random Batch  | Post Loss       |
+| Get Batch Data    | Update Weights  |
+| Head Batch Data   | New Session     |
+| Get Batch Labels  |                 |
+| Head Batch Labels |                 |
+| Batch Data        |                 |
 
 Most of the routes, save for the ones under `Session`, are basically just proxy routes that redirect one to a minio pre-signed URL.
 
@@ -61,6 +64,33 @@ Get a specific model's definition by ID.
 ##### Success
 
 Redirect to minio pre-signed URL to download the data.
+
+##### Errors
+
+| Code | Description                                             |
+| ---- | ------------------------------------------------------- |
+| 404  | The model referenced by the supplied id does not exist. |
+| 500  | Error querying minio.                                   |
+
+---
+
+#### Head Model by ID
+
+```
+HEAD /model/:id
+```
+
+The HEAD equivalent of `Get Model by ID`.
+
+##### URL Params
+
+| Name | Type   | Description   |
+| ---- | ------ | ------------- |
+| id   | String | Model's ID.   |
+
+##### Success
+
+Headers with metadata.
 
 ##### Errors
 
@@ -149,6 +179,32 @@ Redirect to minio pre-signed URL to download the data.
 
 ---
 
+#### Head Parser By ID
+
+```
+HEAD /parser/:id
+```
+
+The HEAD equivalent of `Get Model by ID`.
+
+##### URL Params
+
+| Name | Type   | Description   |
+| ---- | ------ | ------------- |
+| id   | String | Parser's ID.  |
+
+##### Success
+
+Headers with metadata.
+
+##### Errors
+
+| Code | Description           |
+| ---- | --------------------- |
+| 500  | Error querying minio. |
+
+---
+
 #### Upload Parser
 
 ```
@@ -218,6 +274,35 @@ Redirect to minio pre-signed URL to download the model data. Please note the dat
 
 | Code | Description           |
 | ---- | --------------------- |
+| 404  | Model not found.      |
+| 500  | Error querying minio. |
+
+---
+
+#### Head Model Data by ID
+
+```
+HEAD /model/:model/data/:id
+```
+
+The HEAD equivalent of `Get Model Data by ID`.
+
+##### URL Params
+
+| Name  | Type   | Description               |
+| ----- | ------ | ------------------------- |
+| model | String | ID of the model to query. |
+| id    | String | Model Data's ID.          |
+
+##### Success
+
+Headers with metadata.
+
+##### Errors
+
+| Code | Description           |
+| ---- | --------------------- |
+| 404  | Model not found.      |
 | 500  | Error querying minio. |
 
 ---
@@ -299,6 +384,35 @@ Redirect to minio pre-signed URL to download the model labels. Please note the d
 
 | Code | Description           |
 | ---- | --------------------- |
+| 404  | Model not found.      |
+| 500  | Error querying minio. |
+
+---
+
+#### Head Model Labels by ID
+
+```
+HEAD /model/:model/labels/:id
+```
+
+The HEAD equivalent of `Get Model Labels by ID`.
+
+##### URL Params
+
+| Name  | Type   | Description               |
+| ----- | ------ | ------------------------- |
+| model | String | ID of the model to query. |
+| id    | String | Model Label's ID.         |
+
+##### Success
+
+Headers with metadata.
+
+##### Errors
+
+| Code | Description           |
+| ---- | --------------------- |
+| 404  | Model not found.      |
 | 500  | Error querying minio. |
 
 ---
@@ -402,6 +516,35 @@ Redirect to minio pre-signed URL to download the batch of model data.
 
 | Code | Description           |
 | ---- | --------------------- |
+| 404  | Model not found.      |
+| 500  | Error querying minio. |
+
+---
+
+#### Head Batch Data by ID
+
+```
+HEAD /model/:model/batch/:id/data
+```
+
+The HEAD equivalent of `Get Batch Data by ID`.
+
+##### URL Params
+
+| Name  | Type   | Description               |
+| ----- | ------ | ------------------------- |
+| model | String | ID of the model to query. |
+| id    | String | ID of the batch to query. |
+
+##### Success
+
+Headers with metadata.
+
+##### Errors
+
+| Code | Description           |
+| ---- | --------------------- |
+| 404  | Model not found.      |
 | 500  | Error querying minio. |
 
 ---
@@ -429,6 +572,35 @@ Redirect to minio pre-signed URL to download the batch of model labels.
 
 | Code | Description           |
 | ---- | --------------------- |
+| 404  | Model not found.      |
+| 500  | Error querying minio. |
+
+---
+
+#### Head Batch Labels by ID
+
+```
+HEAD /model/:model/batch/:id/labels
+```
+
+The HEAD equivalent of `Get Batch Labels by ID`.
+
+##### URL Params
+
+| Name  | Type   | Description               |
+| ----- | ------ | ------------------------- |
+| model | String | ID of the model to query. |
+| id    | String | ID of the batch to query. |
+
+##### Success
+
+Headers with metadata.
+
+##### Errors
+
+| Code | Description           |
+| ---- | --------------------- |
+| 404  | Model not found.      |
 | 500  | Error querying minio. |
 
 ---
