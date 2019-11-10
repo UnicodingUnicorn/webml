@@ -1,5 +1,15 @@
 version: "3"
 services:
+  minio:
+    image: minio/minio:latest
+    environment:
+      - MINIO_ACCESS_KEY=MINIO_ID
+      - MINIO_SECRET_KEY=MINIO_KEY
+    volumes:
+      - ./files:/export
+    command: minio server /export
+    networks:
+      - minionet
   backend:
     build: ./backend
     tty: true
@@ -7,6 +17,8 @@ services:
       - "10202:10202"
     environment:
       - LISTEN=:10202
+    networks:
+      - minionet
   backend1:
     build: ./backend1
     tty: true
@@ -21,3 +33,5 @@ services:
       - "10200:10200"
     environment:
       - LISTEN=:10200
+networks:
+  minionet:
