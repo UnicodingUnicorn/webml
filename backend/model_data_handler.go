@@ -18,6 +18,16 @@ type ModelDataHandler struct {
 func (h *ModelDataHandler) GetModelData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
 	modelData := make([]string, 0)
 	doneCh := make(chan struct{})
 	defer close(doneCh)
@@ -35,6 +45,16 @@ func (h *ModelDataHandler) GetModelData(w http.ResponseWriter, r *http.Request, 
 func (h *ModelDataHandler) GetModelDataById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 
 	// Send Presigned URL
 	reqParams := make(url.Values)
@@ -67,6 +87,16 @@ func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Reques
 func (h *ModelDataHandler) GetModelLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
 	modelLabels := make([]string, 0)
 	doneCh := make(chan struct{})
 	defer close(doneCh)
@@ -84,6 +114,16 @@ func (h *ModelDataHandler) GetModelLabels(w http.ResponseWriter, r *http.Request
 func (h *ModelDataHandler) GetModelLabelsById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 
 	// Send Presigned URL
 	reqParams := make(url.Values)

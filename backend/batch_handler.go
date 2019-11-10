@@ -25,6 +25,16 @@ type BatchHandler struct {
 func (h *BatchHandler) GetBatch(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
 	ids := make([]string, 0)
 	doneCh := make(chan struct{})
 	defer close(doneCh)
@@ -40,6 +50,16 @@ func (h *BatchHandler) GetBatch(w http.ResponseWriter, r *http.Request, p httpro
 
 func (h *BatchHandler) GetBatchRand(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 
 	ids := make([]string, 0)
 	doneCh := make(chan struct{})
@@ -59,6 +79,16 @@ func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p ht
 	model := p.ByName("model")
 	id := p.ByName("id")
 
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
 	reqParams := make(url.Values)
 	presignedURL, err := h.minioClient.PresignedGetObject(model, "batch:data:"+id, h.expiry, reqParams)
 	if err != nil {
@@ -72,6 +102,16 @@ func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p ht
 func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 	id := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 
 	reqParams := make(url.Values)
 	presignedURL, err := h.minioClient.PresignedGetObject(model, "batch:labels:"+id, h.expiry, reqParams)
@@ -87,6 +127,16 @@ func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p 
 func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	model := p.ByName("model")
 	dataId := p.ByName("id")
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 
 	dataParserId := r.FormValue("data_parser")
 	if dataParserId == "" {
