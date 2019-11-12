@@ -16,7 +16,7 @@ type ModelDataHandler struct {
 }
 
 func (h *ModelDataHandler) GetModelData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
+	model := p.ByName("id")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -43,8 +43,8 @@ func (h *ModelDataHandler) GetModelData(w http.ResponseWriter, r *http.Request, 
 }
 
 func (h *ModelDataHandler) GetModelDataById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("dataid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -68,8 +68,8 @@ func (h *ModelDataHandler) GetModelDataById(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *ModelDataHandler) HeadModelDataById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("dataid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -100,8 +100,8 @@ func (h *ModelDataHandler) HeadModelDataById(w http.ResponseWriter, r *http.Requ
 }
 
 func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("dataid")
 	if id == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
@@ -117,7 +117,7 @@ func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *ModelDataHandler) GetModelLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
+	model := p.ByName("id")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -144,8 +144,8 @@ func (h *ModelDataHandler) GetModelLabels(w http.ResponseWriter, r *http.Request
 }
 
 func (h *ModelDataHandler) GetModelLabelsById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("labelsid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -169,8 +169,8 @@ func (h *ModelDataHandler) GetModelLabelsById(w http.ResponseWriter, r *http.Req
 }
 
 func (h *ModelDataHandler) HeadModelLabelsById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("labelsid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -201,8 +201,8 @@ func (h *ModelDataHandler) HeadModelLabelsById(w http.ResponseWriter, r *http.Re
 }
 
 func (h *ModelDataHandler) UploadModelLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("labelsid")
 	if id == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return

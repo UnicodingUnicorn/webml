@@ -456,7 +456,7 @@ These routes handle the separation of model data/labelsets into small "batches" 
 #### Get Batches
 
 ```
-GET /model/:model/batch
+GET /model/:model/batches
 ```
 
 Get a list of IDs of batches of a model.
@@ -476,7 +476,7 @@ Get a list of IDs of batches of a model.
 #### Get Random Batch
 
 ```
-GET /model/:model/batch/random
+GET /model/:model/batch
 ```
 
 Get the ID of a random batch from a model.

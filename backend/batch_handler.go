@@ -23,7 +23,7 @@ type BatchHandler struct {
 }
 
 func (h *BatchHandler) GetBatch(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
+	model := p.ByName("id")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -49,7 +49,7 @@ func (h *BatchHandler) GetBatch(w http.ResponseWriter, r *http.Request, p httpro
 }
 
 func (h *BatchHandler) GetBatchRand(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
+	model := p.ByName("id")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -76,8 +76,8 @@ func (h *BatchHandler) GetBatchRand(w http.ResponseWriter, r *http.Request, p ht
 }
 
 func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("batchid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -100,8 +100,8 @@ func (h *BatchHandler) GetBatchData(w http.ResponseWriter, r *http.Request, p ht
 }
 
 func (h *BatchHandler) HeadBatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("batchid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -132,8 +132,8 @@ func (h *BatchHandler) HeadBatchData(w http.ResponseWriter, r *http.Request, p h
 }
 
 func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("batchid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -156,8 +156,8 @@ func (h *BatchHandler) GetBatchLabels(w http.ResponseWriter, r *http.Request, p 
 }
 
 func (h *BatchHandler) HeadBatchLabels(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	id := p.ByName("id")
+	model := p.ByName("id")
+	id := p.ByName("batchid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
@@ -189,8 +189,8 @@ func (h *BatchHandler) HeadBatchLabels(w http.ResponseWriter, r *http.Request, p
 
 // Parse and split a dataset into batches
 func (h *BatchHandler) BatchData(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	model := p.ByName("model")
-	dataId := p.ByName("id")
+	model := p.ByName("id")
+	dataId := p.ByName("batchid")
 
 	// Check if bucket exists
 	exists, err := minioClient.BucketExists(model)
