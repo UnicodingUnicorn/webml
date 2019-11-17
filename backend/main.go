@@ -91,5 +91,12 @@ func main() {
 
 	// Start server
 	log.Printf("starting server on %s", listen)
-	log.Fatal(http.ListenAndServe(listen, router))
+	log.Fatal(http.ListenAndServe(listen, AddCors(router)))
+}
+
+func AddCors(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		handler.ServeHTTP(w, r)
+	})
 }
