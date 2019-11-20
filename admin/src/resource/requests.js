@@ -11,10 +11,7 @@ const GET = (url) => {
         };
       })
     } else {
-      throw {
-        api_error: true,
-        status: res.status,
-      };
+      throw res.status;
     }
   });
 };
@@ -32,10 +29,7 @@ const POST = (url, headers, body) => {
         return res.text();
       }
     } else {
-      throw {
-        api_error: true,
-        status: res.status,
-      };
+      throw res.status;
     }
   });
 };
@@ -53,10 +47,7 @@ const PUT = (url, headers, body) => {
         return res.text();
       }
     } else {
-      throw {
-        api_error: true,
-        status: res.status,
-      };
+      throw res.status;
     }
   });
 };
@@ -70,10 +61,7 @@ const HEAD = (url, headers, body) => {
     if (res.ok) {
       return res.headers;
     } else {
-      throw {
-        api_error: true,
-        status: res.status,
-      };
+      throw res.status;
     }
   });
 };

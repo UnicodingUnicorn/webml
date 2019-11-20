@@ -95,6 +95,17 @@ export default {
     this.$store.dispatch('init').then(() => {
       console.log('stuff loaded');
       console.log(this.parsers);
+    }).catch(err => {
+      let msg = '';
+      if (err == 400) {
+        msg = 'An error has occurred';
+      } else if (err == 404) {
+        msg = 'A resource cannot be found';
+      } else if (err == 500) {
+        msg = 'A server error has occurred';
+      }
+      //eslint-disable-next-line
+      M.toast({ html: msg });
     });
   },
 }
