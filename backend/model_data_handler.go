@@ -107,6 +107,16 @@ func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+
 	presignedURL, err := minioClient.PresignedPutObject(model, "data:"+id, h.expiry)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -205,6 +215,16 @@ func (h *ModelDataHandler) UploadModelLabels(w http.ResponseWriter, r *http.Requ
 	id := p.ByName("labelsid")
 	if id == "" {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	// Check if bucket exists
+	exists, err := minioClient.BucketExists(model)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	} else if !exists {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
