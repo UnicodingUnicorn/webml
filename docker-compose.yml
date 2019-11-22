@@ -5,6 +5,8 @@ services:
     environment:
       - MINIO_ACCESS_KEY=MINIO_ID
       - MINIO_SECRET_KEY=MINIO_KEY
+    ports:
+      - "10203:9000"
     volumes:
       - ./files:/export
     command: minio server /export
@@ -13,11 +15,13 @@ services:
   backend:
     build: ./backend
     tty: true
+    depends_on:
+      - minio
     ports:
       - "10202:10202"
     environment:
       - LISTEN=:10202
-      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ENDPOINT=192.168.99.100:10203
       - MINIO_ACCESS_KEY=MINIO_ID
       - MINIO_SECRET_KEY=MINIO_KEY
     networks:
