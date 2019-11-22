@@ -21,10 +21,21 @@ export default {
         commit(types.INIT_PARSERS, parsers);
       });
     },
+    add_parser({ commit }, { name, parser }) {
+      return parserApi.put_parser(parser, name).then(() => {
+        commit(types.ADD_PARSER, {
+          name,
+          parser,
+        });
+      });
+    },
   },
   mutations: {
     [types.INIT_PARSERS](state, parsers) {
       state.parsers = parsers;
+    },
+    [types.ADD_PARSER](state, parser) {
+      state.parsers.push(parser);
     },
   },
 }

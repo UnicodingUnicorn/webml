@@ -1,5 +1,7 @@
 import * as types from '../mutation-types';
 
+import crypto from 'crypto';
+
 import batchApi from '../../resource/batch';
 import dataApi from '../../resource/data';
 import modelsApi from '../../resource/models';
@@ -38,10 +40,27 @@ export default {
         commit(types.INIT_MODELS, models);
       });
     },
+    add_model({ commit }, { name, model }) {
+      const id = crypto.randomBytes(16).toString('hex');
+      return modelsApi.put_model(id, name, model).then(() => {
+        const model = {
+          id,
+          name,
+          model,
+          data: [],
+          labels: [],
+          batches: [],
+        };
+        commit(types.ADD_MODEL, model);
+      });
+    },
   },
   mutations: {
     [types.INIT_MODELS](state, models) {
       state.models = models;
+    },
+    [types.ADD_MODEL](state, model) {
+      state.models.push(model);
     },
   },
 };

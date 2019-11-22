@@ -24,7 +24,6 @@ export default {
   },
   put_parser(data, name) {
     return PUT(`${BASE_URL}/parser`, {
-      'Content-Type': 'multipart/form-data',
       'x-amz-meta-name': name || '',
     }, data);
   },

@@ -24,7 +24,6 @@ export default {
   },
   put_model (id, name, data) {
     return PUT(`${BASE_URL}/model/${id}`, {
-      'Content-Type': 'multipart/form-data',
       'x-amz-meta-name': name || '',
     }, data);
   },
