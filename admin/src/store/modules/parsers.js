@@ -8,6 +8,7 @@ export default {
   },
   getters: {
     parsers: state => state.parsers,
+    parser: state => id => state.parsers.find(p => p.id === id) || null,
   },
   actions: {
     init_parsers({ commit }) {

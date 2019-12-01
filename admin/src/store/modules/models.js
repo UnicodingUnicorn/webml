@@ -12,6 +12,7 @@ export default {
   },
   getters: {
     models: state => state.models,
+    model: state => id => state.models.find(m => m.id === id) || null,
   },
   actions: {
     init_models({ commit }) {
@@ -54,6 +55,50 @@ export default {
         commit(types.ADD_MODEL, model);
       });
     },
+    add_dataset({ commit, getters, rootGetters }, { model, data, labels, shape, dataparser, labelparser }) {
+      return (new Promise((resolve, reject) => {
+        try {
+          const parsedShape = JSON.parse(shape);
+          resolve(parsedShape);
+        } catch(e) {
+          reject('invalid shape JSON');
+        }
+      })).then(parsedShape => {
+        if (rootGetters.parser(dataparser) == null) {
+          throw 'parser not found';
+        } else if (rootGetters.parser(labelparser) == null) {
+          throw 'parser not found';
+        } else if (getters.model(model) == null) {
+          throw 'model not found';
+        }
+        return parsedShape;
+      }).then(parsedShape => {
+        const id = crypto.randomBytes(16).toString('hex');
+        return dataApi.put_model_data(model, id, data, parsedShape, dataparser).then(() => {
+          return dataApi.put_model_labels(model, id, labels, parsedShape, labelparser);
+        }).then(() => {
+          return dataApi.head_model_data_by_id(model, `data:${id}`);
+        }).then(data => {
+          commit(types.ADD_MODEL_DATA, { modelid: model, data });
+        }).then(() => {
+          return dataApi.head_model_label_by_id(model, `labels:${id}`);
+        }).then(labels => {
+          commit(types.ADD_MODEL_LABELS, { modelid: model, labels });
+        });
+      }).catch(e => {
+        if (e == 400) {
+          throw 'incorrect data supplied';
+        } else if (e == 404) {
+          throw 'model not found';
+        } else if (e == 500) {
+          throw 'server error';
+        } else if (typeof e === 'string') {
+          throw e;
+        } else {
+          throw 'client error';
+        }
+      });
+    },
   },
   mutations: {
     [types.INIT_MODELS](state, models) {
@@ -61,6 +106,18 @@ export default {
     },
     [types.ADD_MODEL](state, model) {
       state.models.push(model);
+    },
+    [types.ADD_MODEL_DATA](state, { modelid, data }) {
+      const model = state.models.find(m => m.id == modelid);
+      if (model != undefined) {
+        model.data.push(data);
+      }
+    },
+    [types.ADD_MODEL_LABELS](state, { modelid, labels }) {
+      const model = state.models.find(m => m.id == modelid);
+      if (model != undefined) {
+        model.labels.push(labels);
+      }
     },
   },
 };

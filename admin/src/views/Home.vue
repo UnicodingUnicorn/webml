@@ -8,7 +8,7 @@
             <span class="card-title" v-else>No model selected</span>
           </div>
           <div class="card-action" v-if="currentModel">
-            <a href="#">Add dataset</a>
+            <a class="modal-trigger" v-bind:href="`#add-dataset-${currentModel.id}`">Add dataset</a>
           </div>
         </div>
       </div>
@@ -25,8 +25,8 @@
             </thead>
             <tbody>
               <tr v-for="model in models" v-bind:key="model.id">
-                <td>{{model.name}}</td>
-                <td>{{model.data.length}}</td>
+                <td v-on:click="changeModel(model.id)" style="cursor:pointer">{{model.name}}</td>
+                <td v-on:click="changeModel(model.id)" style="cursor:pointer">{{model.data.length}}</td>
               </tr>
             </tbody>
           </table>
@@ -62,12 +62,15 @@
     </div>
     <AddParser id="add-parser" />
     <AddModel id="add-model" />
+    <AddDataset v-for="model in models" v-bind:key="model.id" v-bind:id="`add-dataset-${model.id}`" v-bind:model="model.id" />
   </div>
 </template>
 
 <script>
 import AddModel from '@/components/AddModel.vue'
 import AddParser from '@/components/AddParser.vue'
+import AddDataset from '@/components/AddDataset.vue'
+
 import { mapGetters } from 'vuex'
 
 export default {
@@ -80,6 +83,7 @@ export default {
   components: {
     AddModel,
     AddParser,
+    AddDataset,
   },
   computed: {
     ...mapGetters([
@@ -87,14 +91,24 @@ export default {
       'parsers',
     ]),
     currentModel: function() {
-      const model =  this.models.find(model => model.id == this.currentID);
+      const model = this.models.find(model => model.id == this.currentID);
       return model != undefined ? model : null;
+    },
+  },
+  methods: {
+    changeModel(id) {
+      this.currentID = id;
     },
   },
   mounted: function() {
     this.$store.dispatch('init').then(() => {
       console.log('stuff loaded');
       console.log(this.parsers);
+
+      // Load modals
+      const modalElems = document.querySelectorAll('.modal');
+      // eslint-disable-next-line
+      M.Modal.init(modalElems);
     }).catch(err => {
       let msg = '';
       if (err == 400) {
