@@ -51,16 +51,8 @@ export default {
         // eslint-disable-next-line
         M.Modal.getInstance(document.getElementById(this.id)).close();
       }).catch(e => {
-        let msg = '';
-        if (e == 400) {
-          msg = 'incorrect data supplied';
-        } else if (e == 409) {
-          msg = 'id conflict';
-        } else if (e == 500) {
-          msg = 'server error encountered';
-        }
         // eslint-disable-next-line
-        M.toast({ html: msg });
+        M.toast({ html: e });
       });
     },
     reset_form: function() {

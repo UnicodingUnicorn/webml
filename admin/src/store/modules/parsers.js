@@ -28,6 +28,18 @@ export default {
           name,
           parser,
         });
+      }).catch(e => {
+        if (e == 400) {
+          throw 'Incorrect data supplied';
+        } else if (e == 409) {
+          throw 'ID conflict';
+        } else if (e == 500) {
+          throw 'Server error encountered';
+        } else if (typeof e === 'string') {
+          throw e;
+        } else {
+          throw 'A client error has occurred';
+        }
       });
     },
   },
