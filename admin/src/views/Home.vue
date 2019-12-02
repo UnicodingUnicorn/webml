@@ -15,39 +15,45 @@
     </div>
     <div class="row">
       <div class="col s6">
-        <div class="card-panel">
-          <table v-if="models.length > 0">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>No. datasets</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="model in models" v-bind:key="model.id">
-                <td v-on:click="changeModel(model.id)" style="cursor:pointer">{{model.name}}</td>
-                <td v-on:click="changeModel(model.id)" style="cursor:pointer">{{model.data.length}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <i v-else>No models found</i>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Models</span>
+            <table v-if="models.length > 0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>No. datasets</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="model in models" v-bind:key="model.id">
+                  <td v-on:click="changeModel(model.id)" style="cursor:pointer">{{model.name}}</td>
+                  <td v-on:click="changeModel(model.id)" style="cursor:pointer">{{model.data.length}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <i v-else>No models found</i>
+          </div>
         </div>
       </div>
       <div class="col s6">
-        <div class="card-panel">
-          <table v-if="parsers.length > 0">
-            <thead>
-              <tr>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="parser in parsers" v-bind:key="parser.id">
-                <td>{{parser.name}}</td>
-              </tr>
-            </tbody>
-          </table>
-          <i v-else>No parsers found</i>
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Parsers</span>
+            <table v-if="parsers.length > 0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="parser in parsers" v-bind:key="parser.id">
+                  <td>{{parser.name}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <i v-else>No parsers found</i>
+          </div>
         </div>
       </div>
     </div>
