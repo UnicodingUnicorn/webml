@@ -10,6 +10,8 @@ import (
 	"github.com/minio/minio-go"
 )
 
+type Shape []int
+
 type ModelDataHandler struct {
 	minioClient *minio.Client
 	expiry      time.Duration
@@ -103,6 +105,19 @@ func (h *ModelDataHandler) UploadModelData(w http.ResponseWriter, r *http.Reques
 	model := p.ByName("id")
 	id := p.ByName("dataid")
 	if id == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	// Verify metadata
+	if r.Header.Get("x-amz-meta-parser") == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	var shape Shape
+	err := json.Unmarshal([]byte(r.Header.Get("x-amz-meta-shape")), &shape)
+	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -214,6 +229,19 @@ func (h *ModelDataHandler) UploadModelLabels(w http.ResponseWriter, r *http.Requ
 	model := p.ByName("id")
 	id := p.ByName("labelsid")
 	if id == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	// Verify metadata
+	if r.Header.Get("x-amz-meta-parser") == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	var shape Shape
+	err := json.Unmarshal([]byte(r.Header.Get("x-amz-meta-shape")), &shape)
+	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}

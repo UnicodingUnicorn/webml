@@ -95,6 +95,12 @@ func (h *ModelHandler) UploadModel(w http.ResponseWriter, r *http.Request, p htt
 		return
 	}
 
+	// Validate metadata
+	if r.Header.Get("x-amz-meta-name") == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
 	// Create bucket for parsers if it doesn't exist
 	exists, err := minioClient.BucketExists(bucketName)
 	if err != nil {

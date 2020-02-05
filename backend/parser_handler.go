@@ -69,6 +69,13 @@ func (h *ParserHandler) HeadParserById(w http.ResponseWriter, r *http.Request, p
 func (h *ParserHandler) UploadParser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	id := RandomHex()
 
+	// Validate metadata
+	if r.Header.Get("x-amz-meta-name") == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+
 	presignedURL, err := minioClient.PresignedPutObject("parser", id, h.expiry)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

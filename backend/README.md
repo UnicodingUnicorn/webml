@@ -115,6 +115,12 @@ Upload a model.
 | ---- | ------ | -------------------- | -------- |
 | id   | String | ID of the new model. | ✓        |
 
+##### Headers
+
+| Name              | Type   | Description            | Required |
+| ----------------- | ------ | ---------------------- | -------- |
+| x-amz-meta-name   | String | Name of the new model. | ✓        |
+
 ##### Body (multipart/form-data)
 
 Model data.
@@ -125,11 +131,11 @@ Redirect to minio pre-signed URL to upload the data.
 
 ##### Errors
 
-| Code | Description                             |
-| ---- | --------------------------------------- |
-| 400  | Error parsing request body.             |
-| 409  | Model with specified ID already exists. |
-| 500  | Error querying minio.                   |
+| Code | Description                                                 |
+| ---- | ----------------------------------------------------------- |
+| 400  | Error parsing request body/metadata is missing.             |
+| 409  | Model with specified ID already exists.                     |
+| 500  | Error querying minio.                                       |
 
 ---
 
@@ -213,6 +219,12 @@ PUT /parser
 
 Upload a parser.
 
+##### Headers
+
+| Name              | Type   | Description            | Required |
+| ----------------- | ------ | ---------------------- | -------- |
+| x-amz-meta-name   | String | Name of the new model. | ✓        |
+
 ##### Success
 
 Redirect to minio pre-signed URL to upload the data.
@@ -221,6 +233,7 @@ Redirect to minio pre-signed URL to upload the data.
 
 | Code | Description           |
 | ---- | --------------------- |
+| 400  | Metadata not found.   |
 | 500  | Error querying minio. |
 
 ---
@@ -314,6 +327,13 @@ PUT /model/:model/data
 ```
 
 Upload data to a model.
+
+##### Headers
+
+| Name                | Type   | Description                | Required |
+| ------------------- | ------ | -------------------------- | -------- |
+| x-amz-meta-shape    | []int  | Shape of the data.         | ✓        |
+| x-amz-meta-parser   | String | Name of the data's parser. | ✓        |
 
 ##### URL Params
 
@@ -424,6 +444,13 @@ PUT /model/:model/labels
 ```
 
 Upload labels to a model.
+
+##### Headers
+
+| Name                | Type   | Description                  | Required |
+| ------------------- | ------ | ---------------------------- | -------- |
+| x-amz-meta-shape    | []int  | Shape of the labels.         | ✓        |
+| x-amz-meta-parser   | String | Name of the labels' parser.  | ✓        |
 
 ##### URL Params
 
