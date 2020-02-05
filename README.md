@@ -8,6 +8,7 @@ API docs for the backend can be found in `backend/README.md`.
 Backend:
 
 ``` bash
+$ cd backend
 # Start docker-compose
 $ docker-compose up --build
 ```
