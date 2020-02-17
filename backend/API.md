@@ -665,15 +665,15 @@ Empty body.
 
 ### Session Handlers
 
-These routes handle the sessions in which a model is trained. Usually, one only has one session per model.
+These routes handle the sessions in which a model is trained. Usually, one only has a single session per model.
 
-#### Get Loss
+#### Get Session
 
 ```
-GET /session/:id/loss
+GET /session/:id
 ```
 
-Get the loss associated with a specific session.
+Get a specific session.
 
 ##### URL Params
 
@@ -683,12 +683,25 @@ Get the loss associated with a specific session.
 
 ##### Success (200 OK)
 
-Value of the loss of the session (float).
+Session data.
+
+```json
+{
+  "loss": "<float64>",
+  "weights": {
+    "shape": ["<int>"],
+    "data": ["<float64>"]
+  },
+  "alpha": "<float64>",
+  "model": "<string>"
+}
+```
 
 ##### Errors
 
 | Code | Description                                      |
 | ---- | ------------------------------------------------ |
+| 400  | The session stored is not proper JSON.           |
 | 404  | Session with the supplied ID could not be found. |
 
 ---
@@ -763,16 +776,16 @@ Empty body.
 #### New Session
 
 ```
-POST /session/:id
+PUT /model/:id/session
 ```
 
 Create a new session. The onus is on the client to at least make a decent effort of making sure the id is unique.
 
 ##### URL Params
 
-| Name | Type   | Description                          |
-| ---- | ------ | ------------------------------------ |
-| id   | String | The ID of the session to be created. |
+| Name | Type   | Description                                    |
+| ---- | ------ | ---------------------------------------------- |
+| id   | String | The ID of the model to create the session for. |
 
 ##### Body (application/json)
 
@@ -791,4 +804,4 @@ Empty body.
 | Code | Description                                  |
 | ---- | -------------------------------------------- |
 | 400  | Error parsing the input body.                |
-| 409  | Session with the supplied ID already exists. |
+| 404  | Model with id not found.                     |

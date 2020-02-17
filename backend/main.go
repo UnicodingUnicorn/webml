@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 	"github.com/minio/minio-go"
+	badger "github.com/dgraph-io/badger"
 )
 
 var listen string
@@ -45,6 +46,13 @@ func main() {
 		log.Printf("created bucket parser")
 	}
 
+	// Create badger DB
+	badgerDB, err := badger.Open(badger.DefaultOptions("./badger"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer badgerDB.Close()
+
 	expiry := time.Second * 120
 
 	// Routes
@@ -54,7 +62,7 @@ func main() {
 	p := ParserHandler{minioClient, expiry}
 	md := ModelDataHandler{minioClient, expiry}
 	b := BatchHandler{minioClient, expiry}
-	s := ValuesHandler{make(map[string]Session)}
+	s := ValuesHandler{badgerDB}
 	// Return minio presigned URLs
 	// Model routes
 	router.GET("/models", m.GetModels)
@@ -84,10 +92,10 @@ func main() {
 	router.HEAD("/model/:id/batch/:batchid/labels", b.HeadBatchLabels)
 	router.POST("/model/:id/data/:batchid/batch", b.BatchData)
 	// Weights/Session routes
-	router.GET("/session/:id/loss", s.GetLoss)
+	router.PUT("/model/:id/session", s.NewSession)
+	router.GET("/session/:id", s.GetSession)
 	router.POST("/session/:id/loss", s.PostLoss)
 	router.POST("/session/:id/weights", s.PostWeights)
-	router.POST("/session/:id", s.NewSession)
 
 	// Start server
 	log.Printf("starting server on %s", listen)
