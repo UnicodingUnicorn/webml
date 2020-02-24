@@ -670,16 +670,17 @@ These routes handle the sessions in which a model is trained. Usually, one only 
 #### Get Session
 
 ```
-GET /session/:id
+GET /model/:mid/session/:sid
 ```
 
 Get a specific session.
 
 ##### URL Params
 
-| Name | Type   | Description   |
-| ---- | ------ | ------------- |
-| id   | String | Session's ID. |
+| Name  | Type   | Description                         |
+| ----- | ------ | ----------------------------------- |
+| mid   | String | ID of the model session belongs to. |
+| sid   | String | Session's ID.                       |
 
 ##### Success (200 OK)
 
@@ -709,16 +710,17 @@ Session data.
 #### Post Loss
 
 ```
-POST /session/:id/loss
+POST /model/:mid/session/:sid/loss
 ```
 
 Update the loss associated with a specific session.
 
 ##### URL Params
 
-| Name | Type   | Description   |
-| ---- | ------ | ------------- |
-| id   | String | Session's ID. |
+| Name  | Type   | Description                         |
+| ----- | ------ | ----------------------------------- |
+| mid   | String | ID of the model session belongs to. |
+| sid   | String | Session's ID.                       |
 
 ##### Body (application/json)
 
@@ -742,16 +744,17 @@ Empty body.
 #### Update Weights
 
 ```
-POST /session/:id/weights
+POST /model/:mid/session/:sid/weights
 ```
 
 Update the weights of a session. This performs a weighted average of one's new values and the existing ones based on the `alpha` set when the session was created.
 
 ##### URL Params
 
-| Name | Type   | Description   |
-| ---- | ------ | ------------- |
-| id   | String | Session's ID. |
+| Name  | Type   | Description                         |
+| ----- | ------ | ----------------------------------- |
+| mid   | String | ID of the model session belongs to. |
+| sid   | String | Session's ID.                       |
 
 ##### Body (application/json)
 

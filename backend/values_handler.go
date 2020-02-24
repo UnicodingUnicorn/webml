@@ -52,7 +52,10 @@ func (h *ValuesHandler) RetrieveSession(id string) (*Session, error) {
 }
 
 func (h *ValuesHandler) GetSession(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	id := p.ByName("id")
+	mid := p.ByName("mid")
+	sid := p.ByName("sid")
+
+	id := mid + "+" + sid
 
 	session, err := h.RetrieveSession(id)
 	if err == badger.ErrKeyNotFound {
@@ -73,7 +76,10 @@ type LossRequest struct {
 }
 
 func (h *ValuesHandler) PostLoss(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	id := p.ByName("id")
+	mid := p.ByName("mid")
+	sid := p.ByName("sid")
+
+	id := mid + "+" + sid
 
 	// Retrieve Session
 	session, err := h.RetrieveSession(id)
@@ -111,7 +117,10 @@ func (h *ValuesHandler) PostLoss(w http.ResponseWriter, r *http.Request, p httpr
 }
 
 func (h *ValuesHandler) PostWeights(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	id := p.ByName("id")
+	mid := p.ByName("mid")
+	sid := p.ByName("sid")
+
+	id := mid + "+" + sid
 
 	// Retrieve Session
 	session, err := h.RetrieveSession(id)
@@ -242,7 +251,7 @@ func (h *ValuesHandler) NewSession(w http.ResponseWriter, r *http.Request, p htt
 	}
 
 	_ = h.Badger.Update(func(txn *badger.Txn) error { // Error should only be ErrReadOnlyTxn
-		return txn.Set([]byte(sid), sessionData)
+		return txn.Set([]byte(id + "+" + sid), sessionData)
 	})
 
 	w.WriteHeader(200)
