@@ -670,6 +670,44 @@ These routes handle the sessions in which a model is trained. Usually, one only 
 #### Get Session
 
 ```
+GET /model/:mid/sessions
+```
+
+Get a list of sessions belong to a specific model.
+
+##### URL Params
+
+| Name  | Type   | Description                         |
+| ----- | ------ | ----------------------------------- |
+| mid   | String | ID of the model session belongs to. |
+
+##### Success (200 OK)
+
+Array of Session data.
+
+```json
+[
+  {
+    "loss": "<float64>",
+    "weights": {
+      "shape": ["<int>"],
+      "data": ["<float64>"]
+    },
+    "alpha": "<float64>",
+    "model": "<string>"
+  }
+]
+```
+
+##### Errors
+
+| Code | Description                                          |
+| ---- | ---------------------------------------------------- |
+| 500  | An error has occurred retrieving the data.           |
+
+#### Get Session
+
+```
 GET /model/:mid/session/:sid
 ```
 

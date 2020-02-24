@@ -93,6 +93,7 @@ func main() {
 	router.POST("/model/:id/data/:batchid/batch", b.BatchData)
 	// Weights/Session routes
 	router.PUT("/model/:id/session", s.NewSession)
+	router.GET("/model/:mid/sessions", s.GetSessions)
 	router.GET("/model/:mid/session/:sid", s.GetSession)
 	router.POST("/model/:mid/session/:sid/loss", s.PostLoss)
 	router.POST("/model/:mid/session/:sid/weights", s.PostWeights)

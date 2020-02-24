@@ -71,6 +71,45 @@ func (h *ValuesHandler) GetSession(w http.ResponseWriter, r *http.Request, p htt
 	json.NewEncoder(w).Encode(session)
 }
 
+func (h *ValuesHandler) GetSessions(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	mid := p.ByName("mid")
+
+	sessions := make([]Session, 0)
+
+	err := h.Badger.View(func(txn *badger.Txn) error {
+		it := txn.NewIterator(badger.DefaultIteratorOptions)
+		defer it.Close()
+
+		for it.Seek([]byte(mid)); it.ValidForPrefix([]byte(mid)); it.Next() {
+			item := it.Item()
+
+			rawSession, err := item.ValueCopy(nil)
+			if err != nil {
+				return err
+			}
+
+			var session Session
+			err = json.Unmarshal(rawSession, &session)
+			if err != nil {
+				return err
+			}
+
+			sessions = append(sessions, session)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(sessions)
+}
+
 type LossRequest struct {
 	Loss float64 `json:"loss"`
 }
