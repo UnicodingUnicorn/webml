@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import batchApi from '../../resource/batch';
 import dataApi from '../../resource/data';
 import modelsApi from '../../resource/models';
+import sessionsApi from '../../resource/sessions';
 
 export default {
   state: {
@@ -31,6 +32,9 @@ export default {
               return batchApi.get_batches(modelid);
             }).then(batches => {
               model.batches = batches;
+              return sessionsApi.get_sessions(modelid);
+            }).then(sessions => {
+              model.sessions = sessions;
               return model;
             });
           }).then(model => {

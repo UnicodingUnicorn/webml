@@ -2,18 +2,23 @@ import { GET, POST } from './requests';
 import { BASE_URL } from '../settings';
 
 export default {
-  get_lost(id) {
-    return GET(`${BASE_URL}/session/${id}/loss`).then({ body, headers } => body);
+  get_sessions(model_id) {
+    return GET(`${BASE_URL}/model/${model_id}/sessions`).then({ body, header } => body);
   },
-  update_loss(id, loss) {
-    return POST(`${BASE_URL}/session/${id}/loss`, {
+
+  get_session(model_id, session_id) {
+    return GET(`${BASE_URL}/model/${model_id}/session/${session_id}`).then({ body, header } => body);
+  },
+
+  update_loss(model_id, session_id, loss) {
+    return POST(`${BASE_URL}/model/${model_id}/session/${session_id}/loss`, {
       'Content-Type': 'application/json',
     }, {
       loss
     });
   },
-  update_weights(id, { shape, weights }) {
-    return POST(`${BASE_URL}/session/${id}/weights`, {
+  update_weights(model_id, session_id, { shape, weights }) {
+    return POST(`${BASE_URL}/model/${model_id}/session/${session_id}/weights`, {
       'Content-Type': 'application/json',
     }, {
       shape,
