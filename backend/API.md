@@ -9,11 +9,11 @@
 
 | Batch             |  Session        |
 | ----------------- | --------------- |
-| Get Batches       | Get Loss        |
+| Get Batches       | Get Sessions    |
 | Get Random Batch  | Post Loss       |
 | Get Batch Data    | Update Weights  |
 | Head Batch Data   | New Session     |
-| Get Batch Labels  |                 |
+| Get Batch Labels  | Get Session     |
 | Head Batch Labels |                 |
 | Batch Data        |                 |
 
