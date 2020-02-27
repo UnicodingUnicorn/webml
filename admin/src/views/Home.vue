@@ -6,6 +6,19 @@
           <div class="card-content">
             <span class="card-title" v-if="currentModel">{{currentModel.name}}</span>
             <span class="card-title" v-else>No model selected</span>
+
+            <table v-if="currentModel">
+              <tbody>
+                <tr>
+                  <td>Batches</td>
+                  <td>{{Array.isArray(currentModel.batches) ? currentModel.batches.length : 0}}</td>
+                </tr>
+                <tr>
+                  <td>Sessions</td>
+                  <td>{{Array.isArray(currentModel.sessions) ? currentModel.sessions.length : 0}}</td>
+                </tr>
+              </tbody>
+            </div>
           </div>
           <div class="card-action" v-if="currentModel">
             <a class="modal-trigger" v-bind:href="`#add-dataset-${currentModel.id}`">Add dataset</a>
